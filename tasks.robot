@@ -10,9 +10,12 @@ Library    RPA.HTTP
 Library    RPA.Windows
 Library    RPA.Tables
 Library    RPA.PDF
+Library    OperatingSystem
 *** Variables ***
-# ${order}   https://robotsparebinindustries.com/orders.csv
-${OUTPUT_DIR}    C:\\Users\\Ponraj\\OneDrive - Yitro Business Consultants India Private Limited\\Pictures\\Saved Pictures   
+# ${row}   https://robotsparebinindustries.com/orders.csv
+${OUTPUT_DIR}    C:\\Users\Ponraj\\OneDrive - Yitro Business Consultants India Private Limited\\Pictures\\Saved Pictures   
+# ${FILE_NAME}        robot_preview_image.png
+# ${FULL_PATH}        ${OUTPUT_DIR}/${FILE_NAME}
 # ${CSV_FILE_PATH}  C:\\Users\\Ponraj\\OneDrive - Yitro Technology Solutions Pvt Ltd\\rpa2
 *** Tasks ***
 Order robots from RobotSpareBin Industries Inc
@@ -21,26 +24,14 @@ Order robots from RobotSpareBin Industries Inc
     
     # Fill and submit the form for one person  
     Fill the form using the data from the Excel file
-    collect the receipt
+    # collect the receipt
+    # Convert Receipt To Pdf
     # Export the receipt as pdf
 *** Keywords ***
 Open the robot order website
   Open Available Browser  https://robotsparebinindustries.com/#/robot-order
   Maximize Browser Window
   Sleep    5s
-#   Click Button    //*[@id="root"]/div/div[2]/div/div/div/div/div/button[1]
-#   Click Button    //*[@id="root"]/div/div[1]/div/div[2]/div[1]/button
- 
-#   Select From List By Value    //*[@id="head"]   2
-#   Click Element    //*[@id="root"]/div/div[1]/div/div[1]/form/div[2]/div/div[1]/label
-#   Click Element    //input[@placeholder='Enter the part number for the legs']
-#   Input Text    //input[@placeholder='Enter the part number for the legs']    2  
-#   Input Text    //*[@id="address"]     chennai
-#   Scroll Element Into View    //*[@id="order"]
-#   Click Button   //*[@id="order"] 
-#   Sleep    5s
-#    Scroll Element Into View   //*[@id="order-another"]
-#   Click Button    //*[@id="order-another"]
 Download the Excel file 
   Download    https://robotsparebinindustries.com/orders.csv  overwrite=True
 
@@ -55,9 +46,22 @@ Fill and submit the form for one person
     Input Text    //input[@placeholder='Enter the part number for the legs']    ${order}[Legs]
     Input Text    //*[@id="address"]    ${order}[Address]
     Scroll Element Into View    //*[@id="order"]
-    Wait Until Element Is Visible    //*[@id="order"]
+    Sleep    5s
     Click Button   //*[@id="order"]
-    RPA.Browser.Selenium.Screenshot  //*[@id="receipt"]   ${OUTPUT_DIR}${/}receipts.png
+    Sleep    5s
+    RPA.Browser.Selenium.Screenshot  //*[@id="receipt"]   ${OUTPUT_DIR}${/}vj.png
+    Sleep    5s
+    # RPA.Browser.Selenium.Screenshot   //*[@id="robot-preview-image"]   ${OUTPUT_DIR}${/}receipts.png
+
+  #  ${pdf}=    Store the receipt as a PDF file    ${order}[Order number]
+  #  ${screenshot}=    Take a screenshot of the robot    ${order}[Order number]
+  #  Embed the robot screenshot to the receipt PDF file    ${screenshot}    ${pdf}
+# Store the receipt as a PDF file   
+#     ${pdf}=    Store the receipt as a PDF file   ${order}[Address]
+#      ${screenshot}=    png_to_pdf  ${OUTPUT_DIR}${/}receipts.png    ${OUTPUT_DIR}${/}receipts.pdf
+#      Store Receipt As PDF
+
+    # Capture Page screenshot    ${OUTPUT_DIR}${/}receipts.png
     # Sleep    5s
     # Wait Until Element Is Visible    //*[@id="order-another"]
     Click Button    //*[@id="order-another"]
@@ -68,9 +72,7 @@ Fill the form using the data from the Excel file
   FOR    ${order}    IN    @{orders}
         Fill and submit the form for one person     ${order}
   END  
-collect the receipt
-   RPA.Browser.Selenium.Screenshot  //*[@id="receipt"]   ${OUTPUT_DIR}${/}receipts.png
-Export the receipt as pdf
-    Wait Until Element Is Visible    //*[@id="receipt"]  ${OUTPUT_DIR}${/}sales_summary.png
+# collect the receipt
+#    RPA.Browser.Selenium.Screenshot  //*[@id="receipt"]   ${OUTPUT_DIR}${/}receipts.png
 Minimal task
     Log    Done.

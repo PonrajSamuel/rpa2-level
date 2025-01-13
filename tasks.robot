@@ -10,10 +10,12 @@ Library    RPA.HTTP
 Library    RPA.Windows
 Library    RPA.Tables
 Library    RPA.PDF
+# Resource    .history/tasks_20250110195501.robot
 Library    OperatingSystem
 *** Variables ***
 # ${row}   https://robotsparebinindustries.com/orders.csv
-${OUTPUT_DIR}    C:\\Users\Ponraj\\OneDrive - Yitro Business Consultants India Private Limited\\Pictures\\Saved Pictures   
+${OUTPUT_DIR}    c:\\Users\\Ponraj\\OneDrive - Yitro Business Consultants India Private Limited\\Pictures\\Saved Pictures
+${order}         orders.csv
 # ${FILE_NAME}        robot_preview_image.png
 # ${FULL_PATH}        ${OUTPUT_DIR}/${FILE_NAME}
 # ${CSV_FILE_PATH}  C:\\Users\\Ponraj\\OneDrive - Yitro Technology Solutions Pvt Ltd\\rpa2
@@ -49,11 +51,14 @@ Fill and submit the form for one person
     Sleep    5s
     Click Button   //*[@id="order"]
     Sleep    5s
-    RPA.Browser.Selenium.Screenshot  //*[@id="receipt"]   ${OUTPUT_DIR}${/}vj.png
-    Sleep    5s
-    # RPA.Browser.Selenium.Screenshot   //*[@id="robot-preview-image"]   ${OUTPUT_DIR}${/}receipts.png
+    # Generate a unique filename for the screenshot
+    ${order_number}=    Set Variable    ${order}[Order number]
+    ${screenshot_file}=    Set Variable   receipt${order}[Order number].png
+    RPA.Browser.Selenium.Screenshot  //*[@id="root"]/div/div[1]   ${OUTPUT_DIR}${/} ${screenshot_file}
+    # ${pdf}=    Convert Receipt To Pdf   ${order}[Order number].${pdf}
+    # # RPA.Browser.Selenium.Screenshot   //*[@id="robot-preview-image"]   ${OUTPUT_DIR}${/}receipts.png
 
-  #  ${pdf}=    Store the receipt as a PDF file    ${order}[Order number]
+    # ${pdf}=    Store the receipt as a PDF file    ${order}[Order number]
   #  ${screenshot}=    Take a screenshot of the robot    ${order}[Order number]
   #  Embed the robot screenshot to the receipt PDF file    ${screenshot}    ${pdf}
 # Store the receipt as a PDF file   
